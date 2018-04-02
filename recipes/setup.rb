@@ -114,7 +114,7 @@ end
 
 git tempest_path do
   repository 'https://github.com/openstack/tempest'
-  reference '17.2.0'
+  reference '15.0.0'
   depth 1
   action :sync
   notifies :run, 'python_execute[install tempest]', :immediately
