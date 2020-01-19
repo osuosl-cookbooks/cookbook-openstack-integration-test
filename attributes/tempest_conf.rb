@@ -108,7 +108,7 @@ default['openstack']['integration-test']['conf'].tap do |conf|
     standard-attr-timestamp
     subnet-service-types
     subnet_allocation).join(',')
-  conf['volume']['catalog_type'] = 'volume'
+  conf['volume']['catalog_type'] = 'volumev3'
   conf['volume']['build_interval'] = 3
   conf['volume']['build_timeout'] = 400
   conf['volume']['backup'] = false

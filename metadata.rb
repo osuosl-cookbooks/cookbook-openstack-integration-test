@@ -8,16 +8,14 @@ version          '18.0.0'
 recipe 'openstack-integration-test::create_network', 'Create a test network and subnet for use in kitchen tests'
 recipe 'openstack-integration-test::run_tempest', 'Run tempest for use in kitchen tests'
 recipe 'openstack-integration-test::setup', 'Installs and configures Tempest'
+recipe 'openstack-integration-test::orchestration', 'Setup environment for testing heat'
 
 %w(ubuntu redhat centos).each do |os|
   supports os
 end
 
-depends 'openstack-block-storage', '>= 18.0.0'
 depends 'openstackclient'
 depends 'openstack-common', '>= 18.0.0'
-depends 'openstack-compute', '>= 18.0.0'
-depends 'openstack-identity', '>= 18.0.0'
 depends 'openstack-image', '>= 18.0.0'
 
 issues_url 'https://launchpad.net/openstack-chef'

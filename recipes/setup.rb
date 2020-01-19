@@ -28,6 +28,7 @@ class Chef::Resource::RubyBlock
 end
 
 platform_options = node['openstack']['integration-test']['platform']
+service_available = node['openstack']['integration-test']['conf']['service_available']
 
 platform_options['tempest_packages'].each do |pkg|
   package pkg do
@@ -79,6 +80,7 @@ connection_params = {
   heat_stack_user_role = node['openstack']['integration-test']['heat_stack_user_role']
   openstack_role heat_stack_user_role do
     connection_params connection_params
+    only_if { service_available['heat'] }
   end
 end
 
@@ -142,6 +144,7 @@ end
     image_name image_name
     image_id image_id
     image_url node['openstack']['integration-test'][img]['source']
+    only_if { service_available['glance'] }
   end
 end
 
@@ -159,6 +162,7 @@ ruby_block 'Create nano flavor 99' do
       Chef::Log.error("Could not create flavor m1.nano. Error was #{e.message}")
     end
   end
+  only_if { service_available['nova'] }
 end
 
 node.default['openstack']['integration-test']['conf'].tap do |conf|
@@ -177,8 +181,7 @@ end
 # merge all config options and secrets to be used in the nova.conf.erb
 integration_test_conf_options = merge_config_options 'integration-test'
 
-nova_user = node['openstack']['compute']['user']
-nova_group = node['openstack']['compute']['group']
+template '/opt/tempest/etc/tempest-blacklist'
 
 # create the keystone.conf from attributes
 template '/opt/tempest/etc/tempest.conf' do
@@ -201,10 +204,10 @@ end
 
 # execute discover_hosts again before running tempest
 execute 'discover_hosts' do
-  user nova_user
-  group nova_group
+  user 'nova'
+  group 'nova'
   command 'nova-manage cell_v2 discover_hosts'
-  action :run
+  only_if { service_available['nova'] }
 end
 
 # delete all secrets saved in the attribute
